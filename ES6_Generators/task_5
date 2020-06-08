@@ -1,0 +1,41 @@
+let fs = require('fs');
+
+function run (generator) {
+
+    let it = generator(go);
+
+    function go(err, data) {
+        if (err) return it.throw(err);
+        it.next(data);
+    }
+    go();
+}
+
+run(function* (done) {
+    let firstFile;
+    try {
+        let dirFiles = yield fs.readdir('NoDir', done); // No such dir
+        firstFile = dirFiles[0];
+    }catch (err) {
+        firstFile = null;
+    }
+    console.log(firstFile);
+});
+
+// let fs = require('fs');
+//
+// function run (generator) {
+//     let it = generator(go);
+//
+//     function go (err, result) {
+//         it.next(result);
+//     }
+//
+//     go();
+// }
+//
+// run(function* (done) {
+//     // читаем `learn-generators` директорию exercises
+//     let exercises = yield fs.readdir('task_1.js', done);
+//     console.log(exercises); // [ 'look_sync_do_async', ..., 'run_stop_run' ]
+// });
