@@ -1,0 +1,64 @@
+function askFoo () {
+    return new Promise(function (resolve, reject) {
+        resolve('foo');
+    });
+}
+
+function run (generator) {
+    // ваш код здесь
+    let task = generator();
+
+    // console.log('до функции степ: ', result)
+    function step(result) {
+        if (result.done) return result.value;
+        // console.log('result value: ' ,typeof(result.value))
+
+       return result.value.then(function (val) {
+           return step(task.next(val));
+        }, function (error) {
+           return step(task.throw(error));
+       });
+
+
+    }
+    step(task.next());
+
+}
+
+run(function* () {
+    let foo;
+    try {
+        foo = yield askFoo();
+    } catch (e) {
+        foo = e;
+    }
+    console.log(foo);
+});
+// console.warn('dfdf')
+// console.error('lllfdf')
+// console.info('oioi')
+// console.log('pppp')
+
+
+// function run (generator) {
+//     // ваш код здесь
+//     let task = generator();
+//     let result = task.next();
+//     // console.log('до функции степ: ', result)
+//     function step() {
+//         if (!result.done) {
+//             // console.log('result value: ' ,typeof(result.value))
+//
+//             if(typeof(result.value) === "object") {
+//
+//             } else {
+//                 result = task.next(result.value);
+//                 console.log('result: ', result)
+//                 // result = task.next(result.value).then((val) => {console.log(val)});
+//                 step();
+//             }
+//         }
+//     }
+//     step();
+//
+// }
